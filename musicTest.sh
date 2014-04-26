@@ -1,6 +1,6 @@
 
-SAMPLE_LENGTH=00:00:10
-#START_POINT=00:01:00
+#How much of the song do you want to hear in seconds?
+SAMPLE_LENGTH=10
 
 SONG_DIR=songs
 
@@ -13,8 +13,11 @@ do
     find songs -type f | shuf -n 1
 
     SONG_NAME=$(find $SONG_DIR -type f | shuf -n 1)
-#"my body-young the giant.mp3"
-    START_POINT=$(($RANDOM%60+60))
+
+    ## Start at some point in the song avoiding the first and last 30s
+    LENGTH=$(mplayer -ao null -identify -frames 0 "$SONG_NAME" 2>&1 | grep ID_LENGTH | grep -o '[0-9]*\.' | grep -o '[0-9]*')
+    LENGTH_TO_USE=`expr $LENGTH - 60 - $SAMPLE_LENGTH`
+    START_POINT=$(($RANDOM%$LENGTH_TO_USE+30))
 
     mplayer -ss $START_POINT -endpos $SAMPLE_LENGTH "$SONG_NAME"
 
@@ -23,11 +26,10 @@ do
     echo -en "Artist:\t"
     read GUESS_ARTIST
 
-    
-
+    # Remove ext
     FOR_COMPARE=`echo "$SONG_NAME" | cut -d'.' -f1`
-    #echo -e " \n'$SONG_DIR/$GUESS_TITLE-$GUESS_ARTIST' equal \n'$FOR_COMPARE'?"
-       echo -e "You wrote:                  '$GUESS_TITLE-$GUESS_ARTIST'"
+
+    echo -e "You wrote:                  '$GUESS_TITLE-$GUESS_ARTIST'"
     if [ "$SONG_DIR/$GUESS_TITLE-$GUESS_ARTIST" == "$FOR_COMPARE" ];
     then
         echo "CORRECT!" 
@@ -44,7 +46,4 @@ do
 done
 
 echo "You scored $SCORE out of $TOTAL"
-
-#echo "You entered: $GUESS_TITLE-$GUESS_ARTIST"
-
 
