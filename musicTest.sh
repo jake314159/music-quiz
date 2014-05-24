@@ -28,7 +28,8 @@ do
     read GUESS_ARTIST
 
     # Remove ext
-    FOR_COMPARE=`echo "$SONG_NAME" | cut -d'.' -f1`
+    FOR_COMPARE=`echo "$SONG_NAME" | grep -o '.*\.'`
+    FOR_COMPARE=`echo "${FOR_COMPARE%?}"`            ## Remove the . of the extention left over in the last line
 
     echo -e "You wrote:                  '$GUESS_TITLE-$GUESS_ARTIST'"
     if [ "$SONG_DIR/$GUESS_TITLE-$GUESS_ARTIST" == "$FOR_COMPARE" ];
