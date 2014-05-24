@@ -35,7 +35,27 @@ done
 for i in {1..10}
 do
 
-    SONG_NAME=$(find "$SONG_DIR" -type f | shuf -n 1)
+    errCount=20
+    SONG_NAME=""
+    SONG_ARTIST=""
+    SONG_TITLE=""
+
+    #Find a music file which has the required meta data
+    while [[ "$errCount" -gt 0 && ( "$SONG_ARTIST" == "" || "$SONG_TITLE" == "" )]]; do
+        SONG_NAME=$(find "$SONG_DIR" -type f | grep '.*\.\(mp3\|m4a\|flac\|ogg\|m4p\|ra\|wma\)' | shuf -n 1)
+        #echo "Song: $SONG_NAME"
+        SONG_ARTIST=`mminfo "$SONG_NAME" | grep 'artist:' | grep -o ':.*' | sed 's/: //' | sed 's/(.*//'`
+        SONG_TITLE=`mminfo "$SONG_NAME" | grep 'title:' | grep -o ':.*' | sed 's/: //'`
+        errCount=`expr $errCount - 1`
+    done
+
+    # We couldn't find a valid music file so display an error and exit
+    if [ "$errCount" -le 0 ]; then
+        echo "Error finding a music file with the meta data filled"
+        exit 1
+    fi
+
+    
 
     ## Start at some point in the song avoiding the first and last 30s
     LENGTH=$(mplayer -ao null -identify -frames 0 "$SONG_NAME" 2>&1 | grep ID_LENGTH | grep -o '[0-9]*\.' | grep -o '[0-9]*')
@@ -53,13 +73,6 @@ do
     read GUESS_TITLE
     echo -en "Artist:\t"
     read GUESS_ARTIST
-
-    # Remove ext
-    FOR_COMPARE=`echo "$SONG_NAME" | grep -o '.*\.'`
-    FOR_COMPARE=`echo "${FOR_COMPARE%?}"`            ## Remove the . of the extention left over in the last line
-
-    SONG_TITLE=`echo "$FOR_COMPARE" | sed 's/.*\///' | cut -d'/' -f1 | cut -d'-' -f1`
-    SONG_ARTIST=`echo "$FOR_COMPARE" | cut -d'-' -f2`
 
     TITLE_SCORE=`python scoreCalculator.py "$SONG_TITLE" "$GUESS_TITLE"`
     ARTIST_SCORE=`python scoreCalculator.py "$SONG_ARTIST" "$GUESS_ARTIST"`
