@@ -91,8 +91,9 @@ if len(sys.argv) < 3:
     exit(1)
     
 
-s1 = sys.argv[1].lower()
-s2 = sys.argv[2].lower()
+s1 = sys.argv[1].lower() #string to match
+s2 = sys.argv[2].lower() #user input
+
 Ldis = LevenshteinDistance(s1, s2)
 corr, corrC = WordsCorrect(s1, s2)
 corrFt, corrFtC = WordsCorrectPreFtString(s1, s2)

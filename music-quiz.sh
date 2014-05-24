@@ -1,6 +1,6 @@
 
 #How much of the song do you want to hear in seconds?
-SAMPLE_LENGTH=16
+SAMPLE_LENGTH=12
 
 SONG_DIR=songs
 
@@ -31,6 +31,14 @@ do
     FOR_COMPARE=`echo "$SONG_NAME" | grep -o '.*\.'`
     FOR_COMPARE=`echo "${FOR_COMPARE%?}"`            ## Remove the . of the extention left over in the last line
 
+    SONG_TITLE=`echo "$FOR_COMPARE" | sed 's/.*\///' | cut -d'/' -f1 | cut -d'-' -f1`
+    SONG_ARTIST=`echo "$FOR_COMPARE" | cut -d'-' -f2`
+
+    TITLE_SCORE=`python scoreCalculator.py "$SONG_TITLE" "$GUESS_TITLE"`
+    ARTIST_SCORE=`python scoreCalculator.py "$SONG_ARTIST" "$GUESS_ARTIST"`
+    TOTAL_SCORE=`expr $TITLE_SCORE + $ARTIST_SCORE`
+    FINE_SCORE=`expr $FINE_SCORE + $TOTAL_SCORE`
+
     echo -e "You wrote:                  '$GUESS_TITLE-$GUESS_ARTIST'"
     if [ "$SONG_DIR/$GUESS_TITLE-$GUESS_ARTIST" == "$FOR_COMPARE" ];
     then
@@ -39,22 +47,10 @@ do
         FINE_SCORE=`expr $FINE_SCORE + 100`    
     else 
         echo -e "Sorry the answer was: '$FOR_COMPARE'"
-        SONG_TITLE=`echo "$FOR_COMPARE" | sed 's/.*\///' | cut -d'/' -f1 | cut -d'-' -f1`
-        SONG_ARTIST=`echo "$FOR_COMPARE" | cut -d'-' -f2`
-        #echo "song title '$SONG_TITLE'"
-        #echo "song artist '$SONG_ARTIST'"
-        if [ "$GUESS_TITLE" == "$SONG_TITLE" ];
-        then
-            echo "But the title was right"
-            FINE_SCORE=`expr $FINE_SCORE + 50` 
-        fi  
-        if [ "$GUESS_ARTIST" == "$SONG_ARTIST" ];
-        then
-            echo "But the artist was right"
-            FINE_SCORE=`expr $FINE_SCORE + 50` 
-        fi
-
-        REPLAY = "n"
+    
+        echo "You got $TOTAL_SCORE points"
+        
+        REPLAY="n"
         echo -en "Do you wan't to play the song again [y/N]: "
         read REPLAY
         if [ "$REPLAY" == "y" ];
@@ -64,12 +60,10 @@ do
     fi
     TOTAL=`expr $TOTAL + 1` 
 
-    read IGNORE
-
     echo -e "\n\n"
 
 done
 
-echo "You scored $SCORE out of $TOTAL"
-echo "Fine score is $FINE_SCORE"
+echo "You correctly answered $SCORE question out of $TOTAL"
+echo "Your score is $FINE_SCORE"
 
