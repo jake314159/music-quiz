@@ -44,8 +44,10 @@ do
     while [[ "$errCount" -gt 0 && ( "$SONG_ARTIST" == "" || "$SONG_TITLE" == "" )]]; do
         SONG_NAME=$(find "$SONG_DIR" -type f | grep '.*\.\(mp3\|m4a\|flac\|ogg\|m4p\|ra\|wma\)' | shuf -n 1)
         #echo "Song: $SONG_NAME"
-        SONG_ARTIST=`mminfo "$SONG_NAME" | grep 'artist:' | grep -o ':.*' | sed 's/: //' | sed 's/(.*//'`
-        SONG_TITLE=`mminfo "$SONG_NAME" | grep 'title:' | grep -o ':.*' | sed 's/: //'`
+        #SONG_ARTIST=`avprobe "$SONG_NAME" | grep 'artist:' | grep -o ':.*' | sed 's/: //' | sed 's/(.*//'`
+        SONG_ARTIST=`avprobe "$SONG_NAME" 3>&1 1>&2- 2>&3- > /dev/null | grep 'artist' | head -n 1 | sed 's/.*:[ ]*//'`
+        SONG_TITLE=`avprobe "$SONG_NAME" 3>&1 1>&2- 2>&3- > /dev/null | grep 'title' | head -n 1 | sed 's/.*:[ ]*//'`
+        #SONG_TITLE=`mminfo "$SONG_NAME" | grep 'title:' | grep -o ':.*' | sed 's/: //'`
         errCount=`expr $errCount - 1`
     done
 
