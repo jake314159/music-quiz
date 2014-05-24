@@ -11,8 +11,6 @@ TOTAL=0
 for i in {1..10}
 do
 
-    find songs -type f | shuf -n 1
-
     SONG_NAME=$(find $SONG_DIR -type f | shuf -n 1)
 
     ## Start at some point in the song avoiding the first and last 30s
@@ -20,7 +18,11 @@ do
     LENGTH_TO_USE=`expr $LENGTH - 60 - $SAMPLE_LENGTH`
     START_POINT=$(($RANDOM%$LENGTH_TO_USE+30))
 
-    mplayer -ss $START_POINT -endpos $SAMPLE_LENGTH "$SONG_NAME"
+    echo -n "Song playing "
+    mplayer -ss $START_POINT -endpos $SAMPLE_LENGTH "$SONG_NAME" > /dev/null 2> /dev/null
+    echo -ne "\n"
+
+    read IGNORE
 
     echo -en "Title:\t"
     read GUESS_TITLE
