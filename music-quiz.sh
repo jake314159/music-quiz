@@ -49,16 +49,17 @@ do
         echo -e "Sorry the answer was: '$FOR_COMPARE'"
     
         echo "You got $TOTAL_SCORE points"
-        
-        REPLAY="n"
-        echo -en "Do you wan't to play the song again [y/N]: "
-        read REPLAY
-        if [ "$REPLAY" == "y" ];
-        then
-            mplayer -ss $START_POINT -endpos $SAMPLE_LENGTH "$SONG_NAME"
-        fi
+ 
     fi
     TOTAL=`expr $TOTAL + 1` 
+
+    REPLAY="n"
+    echo -en "Do you wan't to play the song again [y/N]: "
+    read REPLAY
+    if [ "$REPLAY" == "y" ];
+    then
+        mplayer -ss $START_POINT -endpos $SAMPLE_LENGTH "$SONG_NAME"
+    fi
 
     echo -e "\n\n"
 
