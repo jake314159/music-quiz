@@ -2,16 +2,40 @@
 #How much of the song do you want to hear in seconds?
 SAMPLE_LENGTH=12
 
-SONG_DIR=songs
+SONG_DIR=.
 
 FINE_SCORE=0
 SCORE=0
 TOTAL=0
 
+while test $# -gt 0; do
+    case "$1" in
+        -h|--help)
+            echo "Music quiz application"
+            echo ""
+            echo "Options:"
+            echo "    -d --music-directory"
+            echo "        Specifies the location of the music files used in the quiz. The default "
+            echo "        is the current working directory"
+
+            exit 0
+        ;;
+        -d|--music-directory)
+            shift
+            if test $# -gt 0; then
+                export SONG_DIR=$1
+            fi
+            shift
+        ;;
+        
+    esac
+done
+
+
 for i in {1..10}
 do
 
-    SONG_NAME=$(find $SONG_DIR -type f | shuf -n 1)
+    SONG_NAME=$(find "$SONG_DIR" -type f | shuf -n 1)
 
     ## Start at some point in the song avoiding the first and last 30s
     LENGTH=$(mplayer -ao null -identify -frames 0 "$SONG_NAME" 2>&1 | grep ID_LENGTH | grep -o '[0-9]*\.' | grep -o '[0-9]*')
