@@ -52,7 +52,15 @@ do
         then
             echo "But the artist was right"
             FINE_SCORE=`expr $FINE_SCORE + 50` 
-        fi  
+        fi
+
+        REPLAY = "n"
+        echo -en "Do you wan't to play the song again [y/N]: "
+        read REPLAY
+        if [ "$REPLAY" == "y" ];
+        then
+            mplayer -ss $START_POINT -endpos $SAMPLE_LENGTH "$SONG_NAME"
+        fi
     fi
     TOTAL=`expr $TOTAL + 1` 
 
