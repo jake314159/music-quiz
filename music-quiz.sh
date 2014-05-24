@@ -44,10 +44,8 @@ do
     while [[ "$errCount" -gt 0 && ( "$SONG_ARTIST" == "" || "$SONG_TITLE" == "" )]]; do
         SONG_NAME=$(find "$SONG_DIR" -type f | grep '.*\.\(mp3\|m4a\|flac\|ogg\|m4p\|ra\|wma\)' | shuf -n 1)
         #echo "Song: $SONG_NAME"
-        #SONG_ARTIST=`avprobe "$SONG_NAME" | grep 'artist:' | grep -o ':.*' | sed 's/: //' | sed 's/(.*//'`
         SONG_ARTIST=`avprobe "$SONG_NAME" 3>&1 1>&2- 2>&3- > /dev/null | grep 'artist' | head -n 1 | sed 's/.*:[ ]*//'`
         SONG_TITLE=`avprobe "$SONG_NAME" 3>&1 1>&2- 2>&3- > /dev/null | grep 'title' | head -n 1 | sed 's/.*:[ ]*//'`
-        #SONG_TITLE=`mminfo "$SONG_NAME" | grep 'title:' | grep -o ':.*' | sed 's/: //'`
         errCount=`expr $errCount - 1`
     done
 
@@ -56,8 +54,6 @@ do
         echo "Error finding a music file with the meta data filled"
         exit 1
     fi
-
-    
 
     ## Start at some point in the song avoiding the first and last 30s
     LENGTH=$(mplayer -ao null -identify -frames 0 "$SONG_NAME" 2>&1 | grep ID_LENGTH | grep -o '[0-9]*\.' | grep -o '[0-9]*')
@@ -85,8 +81,7 @@ do
     if [ $TOTAL_SCORE == 200 ];
     then
         echo "CORRECT!" 
-        SCORE=`expr $SCORE + 1` 
-        FINE_SCORE=`expr $FINE_SCORE + 100`    
+        SCORE=`expr $SCORE + 1`  
     else 
         echo -e "Answer:   \t'$SONG_TITLE - $SONG_ARTIST'"
     
