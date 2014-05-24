@@ -19,6 +19,7 @@ do
     START_POINT=$(($RANDOM%$LENGTH_TO_USE+30))
 
     echo -n "Song playing "
+    # Note the output is sent to /dev/null because it contains the answer
     mplayer -ss $START_POINT -endpos $SAMPLE_LENGTH "$SONG_NAME" > /dev/null 2> /dev/null
     echo -ne "\n"
 
@@ -41,14 +42,14 @@ do
     TOTAL_SCORE=`expr $TITLE_SCORE + $ARTIST_SCORE`
     FINE_SCORE=`expr $FINE_SCORE + $TOTAL_SCORE`
 
-    echo -e "You wrote:                  '$GUESS_TITLE-$GUESS_ARTIST'"
-    if [ "$SONG_DIR/$GUESS_TITLE-$GUESS_ARTIST" == "$FOR_COMPARE" ];
+    echo -e "You wrote:\t'$GUESS_TITLE - $GUESS_ARTIST'"
+    if [ $TOTAL_SCORE == 200 ];
     then
         echo "CORRECT!" 
         SCORE=`expr $SCORE + 1` 
         FINE_SCORE=`expr $FINE_SCORE + 100`    
     else 
-        echo -e "Sorry the answer was: '$FOR_COMPARE'"
+        echo -e "Answer:   \t'$SONG_TITLE - $SONG_ARTIST'"
     
         echo "You got $TOTAL_SCORE points"
  
