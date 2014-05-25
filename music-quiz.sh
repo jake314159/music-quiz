@@ -38,6 +38,9 @@ while test $# -gt 0; do
             echo "    -d --music-directory"
             echo "        Specifies the location of the music files used in the quiz. The default "
             echo "        is the current working directory"
+            echo "    -l --sample-length"
+            echo "        Specifies the length of the sample you get to hear. The default is 12"
+            echo "        seconds"
 
             exit 0
         ;;
@@ -48,7 +51,12 @@ while test $# -gt 0; do
             fi
             shift
         ;;
-        
+        -l|--sample-length)
+            shift
+            if test $# -gt 0; then
+                export SAMPLE_LENGTH=$1
+            fi
+            shift
     esac
 done
 
