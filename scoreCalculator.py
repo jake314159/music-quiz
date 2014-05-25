@@ -110,7 +110,7 @@ elif Ldis <= 3:
     score = 100- (10*Ldis)
 elif Ldis <= 10:
     ## Major spelling mistake but not random
-    score = (40*(float(corr)/float(corrC))) + (40*(float(corrFt)/float(corrFtC)))
+    score = (35*(float(corr)/float(corrC))) + (35*(float(corrFt)/float(corrFtC)))
 else:
     ## Pretty much a guess
     score = (10*(float(corr)/float(corrC))) + (10*(float(corrFt)/float(corrFtC)))

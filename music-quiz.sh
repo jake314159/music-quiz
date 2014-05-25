@@ -65,7 +65,7 @@ do
     mplayer -ss $START_POINT -endpos $SAMPLE_LENGTH "$SONG_NAME" > /dev/null 2> /dev/null
     echo -ne "\n"
 
-    read IGNORE
+    read -t 1 IGNORE
 
     echo -en "Title:\t"
     read GUESS_TITLE
