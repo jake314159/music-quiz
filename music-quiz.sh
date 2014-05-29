@@ -125,6 +125,8 @@ do
     if [ "$REPLAY" == "y" ];
     then
         mplayer -ss $START_POINT -endpos $SAMPLE_LENGTH "$SONG_NAME"
+        echo -en "\nPress enter to continue:"
+        read IGNORE
     fi
 
     echo -e "\n\n"
