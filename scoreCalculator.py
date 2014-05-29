@@ -142,7 +142,7 @@ elif Ldis <= 3:
     score = 100- (10*Ldis)
 elif LdisNoFeat <= 3:
     ## Close but a minor spelling mistake and ft. is wrong
-    score = 90- (10*Ldis)
+    score = 90- (10*LdisNoFeat)
 elif Ldis <= 10:
     ## Major spelling mistake but not random
     score = (35*(float(corr)/float(corrC))) + (35*(float(corrFt)/float(corrFtC)))
