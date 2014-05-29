@@ -20,6 +20,7 @@
 #
 
 import sys
+import re
 
 
 # a limit on the max number of words to stop stupid answers breaking things
@@ -114,7 +115,14 @@ if len(sys.argv) < 3:
 s1 = sys.argv[1].lower() #string to match
 s2 = sys.argv[2].lower() #user input
 
+#Force to use same ft. syntax
+s1 = re.sub('( ft| feat| featuring)\.? ', ' ft. ', s1)
+s2 = re.sub('( ft| feat| featuring)\.? ', ' ft. ', s2)
+
+s1NoFeat = re.split(' ft. ', s1)[0]; # Ignore anything after ft.
+
 Ldis = LevenshteinDistance(s1, s2)
+LdisNoFeat = LevenshteinDistance(s1NoFeat, s2)
 corr, corrC = WordsCorrect(s1, s2)
 corrFt, corrFtC = WordsCorrectPreFtString(s1, s2)
 
@@ -125,12 +133,22 @@ corrFt, corrFtC = WordsCorrectPreFtString(s1, s2)
 score = 0
 if Ldis == 0:
     score = 100 ## Full points
+elif LdisNoFeat == 0:
+    score = 90 ## Correct apart from ft. artists
+elif len(s2) <= 2:
+    score = 0 ## If very short answer then prob got wrong
 elif Ldis <= 3:
     ## Close but a minor spelling mistake
     score = 100- (10*Ldis)
+elif LdisNoFeat <= 3:
+    ## Close but a minor spelling mistake and ft. is wrong
+    score = 90- (10*Ldis)
 elif Ldis <= 10:
     ## Major spelling mistake but not random
     score = (35*(float(corr)/float(corrC))) + (35*(float(corrFt)/float(corrFtC)))
+elif Ldis <= 10:
+    ## Major spelling mistake but not random and ft. is wrong
+    score = (30*(float(corr)/float(corrC))) + (30*(float(corrFt)/float(corrFtC)))
 else:
     ## Pretty much a guess
     score = (10*(float(corr)/float(corrC))) + (10*(float(corrFt)/float(corrFtC)))
