@@ -83,13 +83,13 @@ def WordsCorrectPreFtString(s1, s2):
 
     toFt1 = 0
     for s in split1:
-        if s == "featuring" or s == "ft" or s == "ft." or s == "feat" or s == "feat.":
+        if s == "featuring" or s == "ft" or s == "ft." or s == "feat" or s == "feat." or s == "with":
             break
         else:
             toFt1 += 1
     toFt2 = 0
     for s in split2:
-        if s == "featuring" or s == "ft" or s == "ft." or s == "feat" or s == "feat.":
+        if s == "featuring" or s == "ft" or s == "ft." or s == "feat" or s == "feat." s == "with":
             break
         else:
             toFt2 += 1
