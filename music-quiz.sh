@@ -60,7 +60,14 @@ while test $# -gt 0; do
     esac
 done
 
+IFS=$'\n'
+ARR=($(find "$SONG_DIR" -type f | grep '.*\.\(mp3\|m4a\|flac\|ogg\|m4p\|ra\|wma\)' | shuf))
+unset IFS
 
+NUM=${#ARR[@]}
+echo -e "There are $NUM songs to choose from\n"
+
+j=0
 for i in {1..10}
 do
 
@@ -71,7 +78,8 @@ do
 
     #Find a music file which has the required meta data
     while [[ "$errCount" -gt 0 && ( "$SONG_ARTIST" == "" || "$SONG_TITLE" == "" )]]; do
-        SONG_NAME=$(find "$SONG_DIR" -type f | grep '.*\.\(mp3\|m4a\|flac\|ogg\|m4p\|ra\|wma\)' | shuf -n 1)
+        SONG_NAME=${ARR[$j]} #$(find "$SONG_DIR" -type f | grep '.*\.\(mp3\|m4a\|flac\|ogg\|m4p\|ra\|wma\)' | shuf -n 1)
+        j=$[$j +1]
         #echo "Song: $SONG_NAME"
         SONG_ARTIST=`avprobe "$SONG_NAME" 3>&1 1>&2- 2>&3- > /dev/null | grep 'artist' | head -n 1 | sed 's/.*:[ ]*//'`
         SONG_TITLE=`avprobe "$SONG_NAME" 3>&1 1>&2- 2>&3- > /dev/null | grep 'title' | head -n 1 | sed 's/.*:[ ]*//'`
@@ -83,6 +91,8 @@ do
         echo "Error finding a music file with the meta data filled"
         exit 1
     fi
+
+#    echo "I'm now going to play \"$SONG_NAME\""
 
     ## Start at some point in the song avoiding the first and last 30s
     LENGTH=$(mplayer -ao null -identify -frames 0 "$SONG_NAME" 2>&1 | grep ID_LENGTH | grep -o '[0-9]*\.' | grep -o '[0-9]*')
